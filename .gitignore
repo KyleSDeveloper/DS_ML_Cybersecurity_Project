@@ -74,6 +74,8 @@ docs/_build/
 # PyBuilder
 .pybuilder/
 target/
+features.csv
+feature_extract.py
 
 # Jupyter Notebook
 .ipynb_checkpoints

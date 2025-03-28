@@ -1,4 +1,5 @@
-# DS_ML_Cybersecurity_Project: Phishing Detection with XGBoost
+# PhishGuard: Real-Time Phishing Detection with XGBoost
+
 
 This project automates phishing webpage detection using an XGBoost classifier, achieving 92-95% recall to safeguard users from sophisticated cyberthreats.
 

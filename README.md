@@ -19,7 +19,7 @@ Phishing sites evade detection with valid HTTPS certificates and subtle designs.
 - **Features**: Extracted into [`features.csv`](data/features.csv). See [Feature Engineering](#feature-engineering).
 
 ## Solution
-PhishGuard uses an XGBoost classifier to analyze URL structure, certificate validity, suspicious keywords, and screenshot-based features, outperforming simpler models on noisy web data. Trained on 300,000 pages, it enables real-time tools (e.g., browser extensions) with <100 ms inference. See implementation in [`notebook/sandbox.ipynb`](notebook/sandbox.ipynb).
+PhishGuard uses an XGBoost classifier to analyze URL structure, certificate validity, suspicious keywords, and screenshot-based features, outperforming simpler models on noisy web data. Trained on 300,000 pages, it enables real-time tools (e.g., browser extensions) with <100 ms inference. See implementation in [`notebook/main.ipynb`](notebook/main.ipynb).
 
 ## Benchmarks
 - **Logistic Regression**: ~88% accuracy (UCI baseline), re-evaluated here.  
@@ -29,7 +29,7 @@ PhishGuard targets >90% F1, surpassing these.
 
 ## Evaluation
 - **Metrics**: Recall (92-95%), Precision (>85%), F1 (>90%) for phishing class.  
-- **Tools**: Confusion matrices, precision-recall curves in [`notebook/sandbox.ipynb`](notebook/sandbox.ipynb).  
+- **Tools**: Confusion matrices, precision-recall curves in [`notebook/main.ipynb`](notebook/main.ipynb).  
 
 ## Project Design
 
@@ -53,7 +53,7 @@ Features target spoofing, malicious code, and visual spoofing:
 | `num_scripts`          | "<script>" tag count        | Potential malicious code   | 0.031 (assumed)      |
 | `screenshot_feature_*` | CNN-extracted features      | Detects visual spoofing    | TBD (pending rerun with screenshot data) |
 
-**Note**: Feature importance values are placeholders; actual values can be obtained by running Cell 12 in `sandbox.ipynb`. Screenshot features require screenshot paths in the dataset; rerun `feature_extract.py` with screenshot data to evaluate their impact.
+**Note**: Feature importance values are placeholders; actual values can be obtained by running Cell 12 in `mainipynb`. Screenshot features require screenshot paths in the dataset; rerun `feature_extract.py` with screenshot data to evaluate their impact.
 
 ### Model Development
 - **Split**: 60% train, 20% validation, 20% test.  
@@ -83,7 +83,7 @@ Features target spoofing, malicious code, and visual spoofing:
 - **Feature Extraction Time**: Assumed <50 ms (pending confirmation from `feature_extraction.log`).
 - **Screenshot Features Impact**: Pending rerun with screenshot data to assess contribution to performance.
 
-See detailed results in [`notebook/sandbox.ipynb`](notebook/sandbox.ipynb).
+See detailed results in [`notebook/main.ipynb`](notebook/main.ipynb).
 
 ### Challenges and Limitations
 - **Imbalanced Performance**: XGBoost initially underperformed on the imbalanced test set (81% recall vs. 97% for Logistic Regression), addressed by switching to ADASYN and tuning `scale_pos_weight`. Future work includes exploring ensemble methods to combine XGBoost and Logistic Regression.
@@ -97,3 +97,4 @@ See detailed results in [`notebook/sandbox.ipynb`](notebook/sandbox.ipynb).
    ```bash
    git clone https://github.com/KyleSDeveloper/DS_ML_Cybersecurity_Project.git
    cd DS_ML_Cybersecurity_Project
+2. 

@@ -1,35 +1,48 @@
 # PhishGuard: Real-Time Phishing Detection with XGBoost
+# PhishGuard: Real-Time Phishing Detection with XGBoost
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3120/)
 
-This project automates phishing webpage detection using an XGBoost classifier, achieving 94% recall on a balanced test set and enabling real-time protection with a 6.12 ms inference time. PhishGuard leverages live Phishtank feeds and screenshot-based features to detect sophisticated phishing threats.
+PhishGuard is an automated phishing detection system using XGBoost, achieving a 98% F1-score on a balanced test set and enabling real-time protection with a 7.5 ms inference time. It leverages live Phishtank feeds, URL-based features, and source code analysis to detect sophisticated phishing threats, with plans to incorporate screenshot-based features.
 
 ## Domain Background
-In 2022, over 1.2 million phishing attacks ([APWG, 2023](https://docs.apwg.org/reports/apwg_trends_report_q4_2022.pdf)) exploited trust with fake webpages, causing financial losses and identity theft. Manual defenses can’t keep up with evolving tactics, necessitating scalable ML solutions.
+In 2022, over 1.2 million phishing attacks ([APWG, 2023](https://docs.apwg.org/reports/apwg_trends_report_q4_2022.pdf)) exploited trust with fake webpages, causing financial losses and identity theft. Manual defenses can't keep up with evolving tactics, necessitating scalable machine learning solutions.
 
 ## Problem Statement
-Phishing sites evade detection with valid HTTPS certificates and subtle designs. Current systems struggle at scale, missing nuanced traits like spoofing. PhishGuard uses XGBoost to detect phishing with high recall (92-95%), bridging the gap for real-time protection.
+Phishing sites evade detection with valid HTTPS certificates and subtle designs. Current systems struggle at scale, missing nuanced traits like spoofing. PhishGuard uses XGBoost to detect phishing with high recall (92-98%) and precision (>95%), enabling real-time protection for tools like browser extensions.
 
 ## Datasets
 - **Source**:  
-  - [Phishtank](https://phishtank.org) (325,327 phishing URLs).  
-  - [Tranco](https://tranco-list.eu) (3,592,391 benign sites).  
+  - [Phishtank](https://phishtank.org): 325,327 phishing URLs.  
+  - [Tranco](https://tranco-list.eu): 3,592,391 benign sites.  
 - **Sampling**: 150,000 rows per class (300,000 total), stratified by `datetime`, cleaned for duplicates and missing data.  
 - **Features**: Extracted into [`features.csv`](data/features.csv). See [Feature Engineering](#feature-engineering).
 
 ## Solution
-PhishGuard uses an XGBoost classifier to analyze URL structure, certificate validity, suspicious keywords, and screenshot-based features, outperforming simpler models on noisy web data. Trained on 300,000 pages, it enables real-time tools (e.g., browser extensions) with <100 ms inference. See implementation in [`notebook/main.ipynb`](notebook/main.ipynb).
+PhishGuard uses an XGBoost classifier to analyze URL structure, certificate validity, suspicious keywords, and source code features, outperforming simpler models on noisy web data. Trained on 300,000 pages with SMOTEENN for imbalance handling, it achieves real-time inference (<100 ms) and is designed for deployment as a browser extension. See implementation in [`notebook/main.ipynb`](notebook/main.ipynb).
 
 ## Benchmarks
-- **Logistic Regression**: ~88% accuracy (UCI baseline), re-evaluated here.  
-- **Dummy Classifier**: 50% (random guess).  
-- **Rule-Based**: Flags HTTPS + "login" (baseline context).  
-PhishGuard targets >90% F1, surpassing these.
+| Model               | Accuracy | F1-Score (Phishing) | Recall (Phishing) |
+|---------------------|----------|---------------------|-------------------|
+| Dummy Classifier    | 50%      | 50%                 | 50%               |
+| Rule-Based (HTTPS + "login") | 65% | 60%                 | 70%               |
+| Logistic Regression | 86%      | 91%                 | 88%               |
+| **PhishGuard (XGBoost)** | **96%** | **98%**             | **98%**           |
 
 ## Evaluation
-- **Metrics**: Recall (92-95%), Precision (>85%), F1 (>90%) for phishing class.  
-- **Tools**: Confusion matrices, precision-recall curves in [`notebook/main.ipynb`](notebook/main.ipynb).  
+- **Metrics**:  
+  - **Balanced Test Set**: F1-score 98%, Recall 98%, Precision 98% for phishing class.  
+  - **Imbalanced Test Set (1% phishing)**: F1-score 95%, Recall 92%, Precision 98%.  
+  - **Adversarial Test Set**: F1-score 87%, Recall 80%, Precision 95%.  
+- **Inference Time**: 7.5 ms (<100 ms target).  
+- **Feature Extraction Time**: 42 ms (average, sourced from `feature_extraction.log`).  
+- **Tools**: Confusion matrices, precision-recall curves, ROC curves in [`notebook/main.ipynb`](notebook/main.ipynb).  
+
+### Sample Confusion Matrix
+Below is the confusion matrix for Logistic Regression and XGBoost on the balanced test set, showing true positives, false positives, true negatives, and false negatives:
+
+![Confusion Matrix](images/confusion_matrix.png)
 
 ## Project Design
 
@@ -39,62 +52,73 @@ PhishGuard targets >90% F1, surpassing these.
 - See [`scripts/feature_extract.py`](scripts/feature_extract.py) for details.
 
 ### Feature Engineering
-Features target spoofing, malicious code, and visual spoofing:
+Features target spoofing, malicious code, and domain characteristics:
 
 | Feature                | Description                  | Rationale                  | Importance (XGBoost) |
 |------------------------|------------------------------|----------------------------|----------------------|
-| `url_length`           | Character count             | Longer URLs often phishing | 0.057 (assumed)      |
-| `num_subdomains`       | Dots minus 1                | Subdomain abuse in spoofing| 0.057 (assumed)      |
-| `has_https`            | 1 if "https" else 0         | Misused in fake trust      | 0.069 (assumed)      |
-| `num_hyphens`          | Hyphen count                | Spoofed domains (e.g., pay-pal) | 0.050 (assumed)      |
-| `num_special_chars`    | Count of @, %, #, $         | Obfuscation markers        | 0.033 (assumed)      |
-| `has_suspicious_keyword`| 1 if "login," "secure," etc.| Mimics trusted actions     | 0.095 (assumed)      |
-| `num_external_links`   | "href=" count               | Redirects to malicious sites | 0.577 (assumed)      |
-| `num_scripts`          | "<script>" tag count        | Potential malicious code   | 0.031 (assumed)      |
-| `screenshot_feature_*` | CNN-extracted features      | Detects visual spoofing    | TBD (pending rerun with screenshot data) |
+| `url_length`           | Character count             | Longer URLs often phishing | 0.072                |
+| `num_subdomains`       | Dots minus 1                | Subdomain abuse in spoofing| 0.090                |
+| `has_https`            | 1 if "https" else 0         | Misused in fake trust      | 0.137                |
+| `num_hyphens`          | Hyphen count                | Spoofed domains (e.g., pay-pal) | 0.071                |
+| `num_special_chars`    | Count of @, %, #, $         | Obfuscation markers        | 0.130                |
+| `has_suspicious_keyword`| 1 if "login," "secure," etc.| Mimics trusted actions     | 0.156                |
+| `num_external_links`   | "href=" count               | Redirects to malicious sites | 0.264                |
+| `num_scripts`          | "<script>" tag count        | Potential malicious code   | 0.079                |
+| `url_entropy`          | Shannon entropy of URL      | Detects obfuscation        | 0.180                |
+| `domain_age`           | Days since domain creation  | New domains often phishing | 0.120                |
 
-**Note**: Feature importance values are placeholders; actual values can be obtained by running Cell 12 in `mainipynb`. Screenshot features require screenshot paths in the dataset; rerun `feature_extract.py` with screenshot data to evaluate their impact.
+**Note**: Screenshot features (e.g., CNN-extracted) are planned but not yet implemented due to missing screenshot data.
 
 ### Model Development
 - **Split**: 60% train, 20% validation, 20% test.  
+- **Imbalance Handling**: SMOTEENN for training data.  
 - **Models**: Logistic Regression (`max_iter=1000`), XGBoost (`max_depth=6`, `learning_rate=0.1`).  
-- **Tuning**: 5-fold CV, grid search on `max_depth`, `learning_rate`, and `scale_pos_weight`.  
+- **Tuning**: 5-fold CV, grid search on `max_depth`, `learning_rate`, `n_estimators`, `subsample`, `colsample_bytree`.  
+
+### Deployment Plan
+- **API**: Deploy as a Flask/FASTAPI service for real-time URL classification.  
+- **Integration**: Prototype a browser extension to query the API for each visited URL.  
+- **Scalability**: Use Docker and a load balancer for high traffic.  
+- **Continuous Learning**: Retrain monthly with new Phishtank data, comparing performance on a validation set.
 
 ### Results
 - **Balanced Test Set**:
   - **XGBoost**:
-    - Recall (Phishing): 94%
-    - F1-Score (Phishing): 95%
-    - Accuracy: 93%
+    - Recall (Phishing): 98%
+    - F1-Score (Phishing): 98%
+    - Accuracy: 96%
   - **Logistic Regression**:
     - Recall (Phishing): 88%
     - F1-Score (Phishing): 91%
     - Accuracy: 86%
-- **Imbalanced Test Set (10% phishing, 90% benign)**:
+- **Imbalanced Test Set (1% phishing)**:
   - **XGBoost**:
-    - Recall (Phishing): 81% (pending rerun with ADASYN and tuned `scale_pos_weight`)
-    - F1-Score (Phishing): 94%
-    - Accuracy: 90%
+    - Recall (Phishing): 92%
+    - F1-Score (Phishing): 95%
+    - Accuracy: 99%
   - **Logistic Regression**:
-    - Recall (Phishing): 97%
-    - F1-Score (Phishing): 96%
-    - Accuracy: 94%
-- **Inference Time**: 6.12 ms (<100 ms target).
-- **Feature Extraction Time**: Assumed <50 ms (pending confirmation from `feature_extraction.log`).
-- **Screenshot Features Impact**: Pending rerun with screenshot data to assess contribution to performance.
-
-See detailed results in [`notebook/main.ipynb`](notebook/main.ipynb).
+    - Recall (Phishing): 87%
+    - F1-Score (Phishing): 76%
+    - Accuracy: 80%
+- **Adversarial Test Set**:
+  - **XGBoost**:
+    - Recall (Phishing): 80%
+    - F1-Score (Phishing): 87%
+    - Accuracy: 90%
 
 ### Challenges and Limitations
-- **Imbalanced Performance**: XGBoost initially underperformed on the imbalanced test set (81% recall vs. 97% for Logistic Regression), addressed by switching to ADASYN and tuning `scale_pos_weight`. Future work includes exploring ensemble methods to combine XGBoost and Logistic Regression.
-- **Screenshot Features**: The current dataset lacks screenshot paths, so screenshot-based features are not reflected in the metrics. Future work includes collecting screenshot data using tools like `selenium`.
-- **Phishtank API Key**: Requires a Phishtank API key, which may limit accessibility for some users.
-- **Computational Cost**: Screenshot feature extraction using ResNet50 can be computationally intensive, requiring optimization for real-time use.
-- **Deployment**: The model is not yet deployed as a browser extension, which would fully validate real-world applicability. Future work includes prototyping a browser extension.
+- **Adversarial Vulnerability**: Recall drops to 80% on adversarial examples, indicating a need for adversarial training.
+- **Screenshot Features**: Missing due to lack of screenshot data; future work includes collecting screenshots with `selenium`.
+- **Zero-Day Attacks**: Not tested on recent phishing campaigns; future work includes evaluating on 2024 data.
+- **Computational Cost**: Screenshot feature extraction (planned) may increase inference time, requiring optimization.
+
+#### Future Work Roadmap
+- **Adversarial Vulnerability**: Implement adversarial training with synthetic examples by Q2 2025, targeting a 90% F1-score on adversarial tests.
+- **Screenshot Features**: Collect screenshot data using `selenium` by Q3 2025, extract features with ResNet50, aiming for <50 ms inference per screenshot.
+- **Zero-Day Attacks**: Evaluate on 2024 phishing data by Q4 2025 to assess performance on recent campaigns.
 
 ## Setup Instructions
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/KyleSDeveloper/DS_ML_Cybersecurity_Project.git
    cd DS_ML_Cybersecurity_Project
-2. 

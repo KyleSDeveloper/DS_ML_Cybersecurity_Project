@@ -1,0 +1,17 @@
+# requirements.txt
+pandas==2.2.2
+numpy==1.26.4
+sqlalchemy==2.0.30
+tenacity==8.3.0
+requests==2.31.0
+scikit-learn==1.4.2
+xgboost==3.0.0
+matplotlib==3.9.2
+seaborn==0.13.2
+imbalanced-learn==0.13.0
+joblib==1.4.0
+jupyter==1.0.0
+pytest==8.2.0
+python-dateutil==2.9.0.post0
+pytz==2024.2
+tzdata==2024.2

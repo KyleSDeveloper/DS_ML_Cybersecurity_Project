@@ -46,9 +46,7 @@ Below is the confusion matrix for Logistic Regression and XGBoost on the balance
 ## Project Design
 
 ### Data Acquisition
-Received a PostgreSQL dataset (~180.94 GB) from my Coding Nomads mentor via Discord, sourced from Amrita University’s crawlers (Selenium for phishing, standard for benign). Imported into a local PostgreSQL instance (phishing_db) as phishing_2022 (325,327 rows) and benign_2022 (3,592,391 rows) tables. Phishing data matches Phishtank dataset; benign data matches Tranco dataset. Live Phishtank feeds used for continuous learning.
-
-
+Received a PostgreSQL dataset (~180.94 GB) from my Coding Nomads mentor via Discord, sourced from Amrita University’s crawlers (Selenium for phishing, standard for benign). Imported into a local PostgreSQL instance (phishing_db) as phishing_2022 (325,327 rows) and benign_2022 (3,592,391 rows) tables.
 
 ### Feature Engineering
 Features target spoofing, malicious code, and domain characteristics:

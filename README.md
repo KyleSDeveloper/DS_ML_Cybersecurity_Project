@@ -61,8 +61,7 @@ Features target spoofing, malicious code, and domain characteristics:
 | `has_suspicious_keyword`| 1 if "login," "secure," etc.| Mimics trusted actions     | 0.156                |
 | `num_external_links`   | "href=" count               | Redirects to malicious sites | 0.264                |
 | `num_scripts`          | "<script>" tag count        | Potential malicious code   | 0.079                |
-| `url_entropy`          | Shannon entropy of URL      | Detects obfuscation        | 0.180                |
-| `domain_age`           | Days since domain creation  | New domains often phishing | 0.120                |
+
 
 **Note**: Screenshot features (e.g., CNN-extracted) are planned but not yet implemented due to missing screenshot data.
 

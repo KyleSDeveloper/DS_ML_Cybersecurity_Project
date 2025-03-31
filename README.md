@@ -67,7 +67,7 @@ Features target spoofing, malicious code, and domain characteristics:
 
 ### Model Development
 - **Split**: 60% train, 20% validation, 20% test.  
-- **Imbalance Handling**: SMOTEENN for training data.  
+- **Imbalance Handling**: Dataset balanced by sampling (150,000 per class).  
 - **Models**: Logistic Regression (`max_iter=1000`), XGBoost (`max_depth=6`, `learning_rate=0.1`).  
 - **Tuning**: 5-fold CV, grid search on `max_depth`, `learning_rate`, `n_estimators`, `subsample`, `colsample_bytree`.  
 

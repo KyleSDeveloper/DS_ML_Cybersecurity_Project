@@ -33,8 +33,7 @@ PhishGuard employs an XGBoost classifier to analyze URL structure, certificate v
 - **Metrics**:  
   - **Balanced Test Set**: F1-score 98%, Recall 98%, Precision 98% for phishing class.  
   - **Imbalanced Test Set (1% phishing)**: F1-score 95%, Recall 92%, Precision 98%.  
-  - **Adversarial Test Set**: F1-score 87%, Recall 80%, Precision 95%.  
-- **Inference Time**: 7.5 ms (<100 ms target).  
+  - **Adversarial Test Set**: F1-score 87%, Recall 80%, Precision 95%.   
 - **Feature Extraction Time**: 42 ms (average, sourced from `feature_extraction.log`).  
 - **Tools**: Confusion matrices, precision-recall curves, ROC curves in [`notebook/main.ipynb`](notebook/main.ipynb).  
 

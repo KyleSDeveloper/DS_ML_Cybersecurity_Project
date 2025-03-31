@@ -19,7 +19,7 @@ Phishing sites evade detection with valid HTTPS certificates and subtle designs.
 - **Features**: Extracted into [`features.csv`](data/features.csv). See [Feature Engineering](#feature-engineering).
 
 ## Solution
-PhishGuard uses an XGBoost classifier to analyze URL structure, certificate validity, suspicious keywords, and source code features, outperforming simpler models on noisy web data. Trained on 300,000 pages with SMOTEENN for imbalance handling, it achieves real-time inference (<100 ms) and is designed for deployment as a browser extension. See implementation in [`notebook/main.ipynb`](notebook/main.ipynb).
+PhishGuard employs an XGBoost classifier to analyze URL structure, certificate validity, suspicious keywords, and source code, outperforming baselines on noisy web data. Trained on 300,000 pages, it achieves <100 ms inference for browser extension use. See `notebook/main.ipynb` (notebook/main.ipynb).
 
 ## Benchmarks
 | Model               | Accuracy | F1-Score (Phishing) | Recall (Phishing) |

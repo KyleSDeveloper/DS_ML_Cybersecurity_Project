@@ -18,10 +18,6 @@ Phishing sites evade detection with valid HTTPS certificates and subtle designs.
   - **[Tranco](https://tranco-list.eu)**: 3,592,391 benign sites (static baseline, fully loaded in `benign_2022`).  
 - **Sampling**: Sampled 150,000 rows per class (300,000 total). Phishing URLs sourced from `phishing_2022` (undersampled from 325,327), benign URLs from `benign_2022` (undersampled from 3,592,391), stratified by `datetime` where available, cleaned for duplicates and missing data.  
 - **Features**: Extracted into [`features.csv`](data/features.csv). See [Feature Engineering](#feature-engineering).
-  -   
-  -  
-- **Sampling**: 150,000 rows per class (300,000 total), stratified by `datetime`, cleaned for duplicates and missing data.  
-- **Features**: Extracted into [`features.csv`](data/features.csv). See [Feature Engineering](#feature-engineering).
 
 ## Solution
 PhishGuard employs an XGBoost classifier to analyze URL structure, certificate validity, suspicious keywords, and source code, outperforming baselines on noisy web data. Trained on 300,000 pages, it achieves <100 ms inference for browser extension use. See `notebook/main.ipynb` (notebook/main.ipynb).

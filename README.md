@@ -10,11 +10,16 @@ In 2022, over 1.2 million phishing attacks ([APWG, 2023](https://docs.apwg.org/r
 
 ## Problem Statement
 Phishing sites evade detection with valid HTTPS certificates and subtle designs. Current systems struggle at scale, missing nuanced traits like spoofing. PhishGuard uses XGBoost to detect phishing with high recall (92-98%) and precision (>95%), enabling real-time protection for tools like browser extensions.
-
+ 
 ## Datasets
-- **Source**:  
-  - [Phishtank](https://phishtank.org): 325,327 phishing URLs.  
-  - [Tranco](https://tranco-list.eu): 3,592,391 benign sites.  
+- **Sources**:  
+  - **Amrita Center for Cybersecurity Systems and Networks**: PostgreSQL dump sourced from [Amrita Center for Cybersecurity Systems and Networks](https://www.amrita.edu/center/amrita-center-for-cybersecurity-systems-and-networks/). Contains phishing URLs (Selenium crawler) and benign URLs (standard crawler), 2022 snapshot. Database size: ~180.94 GB. Row counts: `phishing_2022` (325,327 rows, matches Phishtank), `benign_2022` (3,592,391 rows, matches Tranco).  
+  - **[Phishtank](https://phishtank.org)**: 325,327 phishing URLs (live feed for continuous learning, already included in `phishing_2022`).  
+  - **[Tranco](https://tranco-list.eu)**: 3,592,391 benign sites (static baseline, fully loaded in `benign_2022`).  
+- **Sampling**: Sampled 150,000 rows per class (300,000 total). Phishing URLs sourced from `phishing_2022` (undersampled from 325,327), benign URLs from `benign_2022` (undersampled from 3,592,391), stratified by `datetime` where available, cleaned for duplicates and missing data.  
+- **Features**: Extracted into [`features.csv`](data/features.csv). See [Feature Engineering](#feature-engineering).
+  -   
+  -  
 - **Sampling**: 150,000 rows per class (300,000 total), stratified by `datetime`, cleaned for duplicates and missing data.  
 - **Features**: Extracted into [`features.csv`](data/features.csv). See [Feature Engineering](#feature-engineering).
 

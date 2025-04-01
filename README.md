@@ -45,7 +45,7 @@ Below is the confusion matrix for Logistic Regression and XGBoost on the balance
 ## Project Design
 
 ### Data Acquisition
-Received a PostgreSQL dataset (~180.94 GB) from my Coding Nomads mentor via Discord, sourced from Amrita University’s crawlers (Selenium for phishing, standard for benign). Imported into a local PostgreSQL instance (phishing_db) as phishing_2022 (325,327 rows) and benign_2022 (3,592,391 rows) tables.
+Received a PostgreSQL dataset (~180.94 GB) from Amrita University’s crawlers (Selenium for phishing, standard for benign). Imported into a local PostgreSQL instance (phishing_db) as phishing_2022 (325,327 rows) and benign_2022 (3,592,391 rows) tables.
 
 ### Feature Engineering
 Features target spoofing, malicious code, and domain characteristics:
@@ -123,59 +123,5 @@ Features target spoofing, malicious code, and domain characteristics:
 
 pip install -r requirements.txt
 
-3. Set Up PostgreSQL Database:
-  Install PostgreSQL and create a database named phishing_db.
-
-  Update the DB_STRING environment variable in .env with your credentials:
-
-DB_STRING=postgresql://username:password@localhost:5432/phishing_db?sslmode=require
-
-Populate the database with phishing_2022 and benign_2022 tables (schema in `scripts/db_schema.sql` (scripts/db_schema.sql)).
-
-Set Up Phishtank API Key:
-Obtain a Phishtank API key from phishtank.org.
-
-Add the key to your .env file:
-
-PHISHTANK_API_KEY=your_api_key_here
-
-Fetch Live Phishtank Data:
-Run the script to fetch live phishing URLs:
-bash
-
-python scripts/fetch_phishtank_data.py
-
-Extract Features:
-Run the feature extraction script to generate features.csv:
-bash
-
-python scripts/feature_extract.py
-
-Run the Main Notebook:
-Open notebook/main.ipynb in Jupyter Notebook and execute all cells:
-bash
-
-jupyter notebook notebook/main.ipynb
-
-Usage
-Train the Model: Run all cells in notebook/main.ipynb to train the XGBoost model and evaluate performance.
-
-Predict on New URLs:
-Extract features for new URLs using scripts/feature_extract.py (modify to process single URLs if needed).
-
-Use the trained model to predict:
-python
-
-import joblib
-model = joblib.load('models/best_xgb.pkl')
-scaler = joblib.load('models/scaler.pkl')
-# Example: features = extract_features('https://fake-login.com')
-prediction = model.predict(scaler.transform(features))
-print("Phishing" if prediction[0] == 1 else "Benign")
-# Output: Phishing
-
-Continuous Learning:
-Run the retraining script to update the model with new Phishtank data:
-bash
 
 

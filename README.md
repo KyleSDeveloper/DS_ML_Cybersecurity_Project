@@ -113,16 +113,7 @@ Features target spoofing, malicious code, and domain characteristics:
 - **Screenshot Features**: Collect screenshot data using `selenium` by Q3 2025, extract features with ResNet50, aiming for <50 ms inference per screenshot.
 - **Zero-Day Attacks**: Evaluate on 2024 phishing data by Q4 2025 to assess performance on recent campaigns.
 
-## Setup Instructions
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/KyleSDeveloper/DS_ML_Cybersecurity_Project.git
-   cd DS_ML_Cybersecurity_Project
 
-2. **Install Dependencies**:
-  ```bash
-
-pip install -r requirements.txt
 
 
 

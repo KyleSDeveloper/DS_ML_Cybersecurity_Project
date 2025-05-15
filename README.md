@@ -41,7 +41,7 @@ PhishGuard employs an XGBoost classifier to analyze URL structure, certificate v
 ### Sample Confusion Matrix
 Below is the confusion matrix for Logistic Regression and XGBoost on the balanced test set, showing true positives, false positives, true negatives, and false negatives:
 
-![Confusion Matrix](images/confusion_matrix.png)
+![Confusion Matrix](confusion_matrix.png)
 
 ## Project Design
 
